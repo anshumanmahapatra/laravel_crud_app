@@ -17,6 +17,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Route to no access page
+Route::get('/noaccess', [SampleController::class, 'goToNoAccess']);
+
 //Route to test String
 Route::get('/test-string', function () {
     return 'Hello World';
@@ -36,4 +39,27 @@ Route::get('/go-back', function () {
 });
 
 //Route to show a view through controller
-Route::get('/view-through-controller',[SampleController::class, 'sampleFunction'] );
+// Route::get('/view-through-controller',[SampleController::class, 'sampleFunction'] );
+
+//Passing arguments to routes as number
+Route::get('view-through-controller/{id}', [SampleController::class, 'parameterFunction'])->where('id', '[0-9]+');
+
+//Passing arguments to routes as string
+Route::get('/view-through-controller/{name}', [SampleController::class, 'parameterFunction'])->where('name', '[a-zA-Z]+');
+
+//Passing multiple arguments to routes
+Route::get('/view-through-controller/{name}/{id}', [SampleController::class, 'parameterFunction'])->where([
+    'name' => '[a-zA-Z]+',
+    'id' => '[0-9]+',
+]);
+
+//Named Routes
+Route::get('/view-through-controller',[SampleController::class, 'sampleFunction'] )->name('view-through-controller');
+
+//Group middleware example
+Route::group(['middleware' => ['groupMiddleware']], function () {
+    Route::get('/view-through-controller/{middlewareName}',[SampleController::class, 'forGroupMiddleware'] );
+});
+
+//Route middleware example
+Route::get('middleware/routeMiddleware',[SampleController::class, 'forRouteMiddleware'] )->middleware('routeMiddleware');
