@@ -6,7 +6,25 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="/test-string">A view with text</a> <br>
-    <a href="/test-json-object">A view with json object</a> <br>
+    <h3>Click on the button below to see a View with</h3>
+    <label for="">1. Just a text</label>
+    <a href="/test-string">
+        <button>Open</button>
+    </a> 
+    <br>
+    <label for="">2. Just a json object</label>
+    <a href="/test-json-object">
+        <button>Open</button>
+    </a> 
+    <br>
+    <label for="">3. Data from MySQL database</label>
+    <a href="/show-notes">
+        <button>Open</button>
+    </a> 
+    <br>
+    <label for="">4. Data received from an API</label>
+    <a href="/show-data-from-API">
+        <button>Open</button>
+    </a> 
 </body>
 </html>
