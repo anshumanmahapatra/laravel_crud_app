@@ -55,12 +55,27 @@ class apiController extends Controller
 
         if($response) {
             return [
-                "Result" => "Note was successfully delete"
+                "Result" => "Note was successfully deleted"
             ];
         } else {
             return [
                 "Result" => "Note couldn't be deleted"
             ];
+        }
+    }
+
+    public function searchNotesAPI($name) {
+        $response1 = Note::where("title", "like", "%".$name."%")->get();
+        $response2 = Note::where("description", "like", "%".$name."%")->get();
+
+        $emptyNote = new Note();
+
+        if(!$response1->isEmpty()) {
+            return $response1;
+        } else if (!$response2->isEmpty()) {
+            return $response2;
+        } else {
+            return $emptyNote;
         }
     }
 }
