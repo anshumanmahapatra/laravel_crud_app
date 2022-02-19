@@ -8,7 +8,7 @@ class NoteWidget {
     String timeago = showTimeAgo(snapshot.data![index].created);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: Colors.blue.shade800,
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(15),

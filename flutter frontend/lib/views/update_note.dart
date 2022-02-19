@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import '../models/note_model.dart';
 
 import '../controller/controller.dart';
 
-class AddNote extends StatelessWidget {
-  const AddNote({Key? key}) : super(key: key);
+class UpdateNote extends StatelessWidget {
+  final NoteModel? noteModel;
+  const UpdateNote({Key? key, this.noteModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,36 +18,62 @@ class AddNote extends StatelessWidget {
     double width = Get.mediaQuery.size.width;
     double height = Get.mediaQuery.size.height;
 
-    DateTime dt = DateTime.now();
-    int hour = dt.hour;
-    int minute = dt.minute;
+    String showTimeAgo() {
+      String timePosted;
+      DateTime parsedDate = DateTime.parse(noteModel!.created);
+      DateTime now = DateTime.now();
+      Duration difference = now.difference(parsedDate);
+      timePosted = timeago.format(now.subtract(difference));
+      return timePosted;
+    }
 
     return WillPopScope(
       onWillPop: controller.shouldPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Add Note'),
+          title: const Text('Update Note'),
           centerTitle: true,
           backgroundColor: Colors.blue.shade800,
           elevation: 0.0,
           actions: [
             GestureDetector(
               onTap: () {
-                if (formKey.currentState!.validate()) {
-                  formKey.currentState!.save();
-                  controller.createNoteData();
-                  controller.didThePageChange(true);
-                  controller.readNoteData();
-                  Get.back();
-                }
+                controller.saveId(noteModel!.id);
+                controller.deleteNoteData();
+                controller.didThePageChange(true);
+                controller.readNoteData();
+                Get.back();
               },
               child: const Icon(
-                Icons.check,
+                Icons.delete,
               ),
             ),
             SizedBox(
               width: width * 0.05,
             )
+          ],
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  controller.saveId(noteModel!.id);
+                  controller.updateNoteData();
+                  controller.didThePageChange(true);
+                  controller.readNoteData();
+                  Get.back();
+                }
+              },
+              backgroundColor: Colors.blue.shade800,
+              child:
+                  const Icon(Icons.arrow_right_alt_sharp, color: Colors.white),
+            ),
+            SizedBox(
+              height: height * 0.05,
+            ),
           ],
         ),
         body: Column(
@@ -58,6 +88,7 @@ class AddNote extends StatelessWidget {
                       child: TextFormField(
                         maxLines: 2,
                         minLines: 1,
+                        initialValue: noteModel!.title,
                         textCapitalization: TextCapitalization.sentences,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -88,6 +119,7 @@ class AddNote extends StatelessWidget {
                       child: TextFormField(
                         maxLines: 100,
                         minLines: 1,
+                        initialValue: noteModel!.description,
                         textCapitalization: TextCapitalization.sentences,
                         onSaved: (value) {
                           controller.saveDescription(value!);
@@ -121,7 +153,7 @@ class AddNote extends StatelessWidget {
               color: Colors.blue.shade800,
               alignment: Alignment.center,
               child: Text(
-                "Edited at " + hour.toString() + ":" + minute.toString(),
+                "Edited " + showTimeAgo(),
                 style: const TextStyle(color: Colors.white),
               ),
             )
